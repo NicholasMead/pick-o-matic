@@ -5,6 +5,7 @@ export const MemberTag = (props) => {
 
     const className = [
         "member-tag",
+        "align-middle",
         props.highlighted ? "highlighted" : false,
         props.selected ? "selected" : false,
     ].filter(Boolean).join(" ")

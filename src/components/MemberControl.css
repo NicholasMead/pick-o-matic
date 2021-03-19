@@ -7,13 +7,13 @@
     border-color: #aaa;
     border-width: 2px;
     border-style: solid;
-    width: 2.5rem;
+    width: 3rem;
     padding: 1px;
     overflow: hidden;
     text-align: center;
     font-size: 1rem;
     
-    height: 2.5rem;
+    height: 3rem;
     line-height: 2.5rem;
     user-select: none;
     cursor: pointer;

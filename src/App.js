@@ -7,6 +7,8 @@ import { Member } from './models/member'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { MemberInput } from './components/MemberInput';
+import reactDom from 'react-dom';
+import { ThemeButton } from './components/ThemeButton';
 
 function App() {
   
@@ -20,6 +22,31 @@ function App() {
   ]);
 
   const [newMemberName, setNewMemberName] = React.useState("");
+
+  const [pickCountdown, setPickCountdown] = React.useState(-1);
+  const [pickIndex, setPickIndex] = React.useState(-1);
+
+  React.useEffect(() => {
+    if(pickCountdown < 0)
+    {
+      return;
+    }
+    
+    if(pickCountdown === 0)
+    {
+      setPickIndex(pickIndex % members.length);
+      setPickCountdown(pickCountdown - 1);
+      registerPick(pickIndex % members.length);
+      return;
+    }
+
+    var timeout = setTimeout(() => {
+      setPickCountdown(pickCountdown - 1);
+      setPickIndex(i => i + 1);
+    }, 50 + (1450 / pickCountdown));
+
+    return () => clearTimeout(timeout);
+  }, [pickCountdown, pickIndex]);
 
   const changeMemberScore = (index, change) => {
     const copy = [...members];
@@ -54,6 +81,40 @@ function App() {
     setMembers(copy.filter((_, i) => i != index));
   }
 
+  const randomInt = (min, max) => 
+  {
+    return min + Math.floor(Math.random() * max);
+  }
+
+  const pickRandom = () => {
+    const pick = randomInt(0, members.length);
+    pickMember(pick);
+  }
+
+  const pickFair = () => {
+    const selectedArr = members.map(m => m.selectedCount)
+    const minSelect = Math.min(...selectedArr);
+    let pick = null;
+
+    do{
+      pick = randomInt(0, members.length);
+    }while(members[pick].selectedCount != minSelect);
+
+    pickMember(pick);
+  }
+
+  const pickMember = (index) => {
+    const pick = index + members.length * 3 + 2; // +2 because it stards at -1 and the final countdown selects not progresses
+    
+    setPickIndex(-1);
+    setPickCountdown(pick);
+  } 
+
+  const clearPick = () => {
+    setPickIndex(-1);
+    setPickCountdown(-1);
+  }
+
   const addMember = () => {
     if(!newMemberName)
       return;
@@ -71,19 +132,37 @@ function App() {
 
   const clearNewMember = () => setNewMemberName("");
 
+  const registerPick = (index) => {
+    if(index < 0 || index >= members.length)
+      return;
+
+    const copy = [...members];
+    copy[index].selectedCount++;
+    
+    setMembers(copy);
+  }
+
+  const selected = pickIndex % members.length;
+  const final = pickCountdown < 0;
+
   return (
     <div class="App">
-      <div class="members-board">
+      <div class="actions" style={{margin: 10}}>
+        <div class="btn btn-primary mr-2" onClick={pickRandom}>Pick Random</div>
+        <div class="btn btn-primary mr-2" onClick={pickFair}>Pick Fair</div>
+        <div class="btn btn-warning" onClick={clearPick}>Clear</div>
+      </div>
+      <div class="members-board" style={{margin: 10, marginTop: 30}}>
         {members.map((m, i) => 
           <div
-          key={m.name}
+          key={`member-${m.id}`}
           class="member-row"
-          style={{margin: "10px"}}
+          style={{marginTop: "10px"}}
           >
             <MemberTag 
               name={m.name}
-              selected={m.selected}
-              highlighted={m.highlighted}
+              selected={selected === i && final}
+              highlighted={selected === i && !final}
               score = {m.score}
               />
             <MemberControl 
@@ -115,13 +194,19 @@ function App() {
               : 
               <MemberControl noSelect/>
             }
+            <MemberControl onClick={() => pickMember(i)}>
+              <FontAwesomeIcon icon="check" />
+            </MemberControl>
+            <MemberControl noSelect>
+              {m.selectedCount}
+            </MemberControl>
             <MemberControl onClick={() => removeMember(i)}>
               <FontAwesomeIcon icon="user-minus" />
             </MemberControl>
           </div>
         )}
       </div>
-      <div class="members-new" style={{margin: 10, marginTop: 50}}>
+      <div class="members-new" style={{margin: 10, marginTop: 30}}>
         <div class="member-row">
           <MemberInput 
             onChange={setNewMemberName}
