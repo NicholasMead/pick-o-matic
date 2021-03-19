@@ -7,9 +7,9 @@ export const MemberInput = (props) => {
     const [value, setValue] = React.useState("");
 
     React.useEffect(() => {
-        if(value != props.value)
+        if(value !== props.value)
             setValue(props.value);
-    }, [props.value]);
+    }, [props, value]);
 
     const onValueChange = (e) => {
         const newValue = e.target.value.substr(0, 16);

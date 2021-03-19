@@ -7,8 +7,6 @@ import { Member } from './models/member'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { MemberInput } from './components/MemberInput';
-import reactDom from 'react-dom';
-import { ThemeButton } from './components/ThemeButton';
 
 function App() {
   
@@ -21,27 +19,39 @@ function App() {
   const [pickCountdown, setPickCountdown] = React.useState(-1);
   const [pickIndex, setPickIndex] = React.useState(-1);
 
-  React.useEffect(() => {
-    if(pickCountdown < 0)
-    {
-      return;
-    }
+  const randomInt = (min, max) => 
+  {
+    return min + Math.floor(Math.random() * max);
+  }
+
+  const pickRandom = () => {
+    const pick = randomInt(0, members.length);
+    pickMember(pick);
+  }
+
+  const pickFair = () => {
+    const selectedArr = members.map(m => m.selectedCount)
+    const minSelect = Math.min(...selectedArr);
+    let pick = null;
+
+    do{
+      pick = randomInt(0, members.length);
+    }while(members[pick].selectedCount !== minSelect);
+
+    pickMember(pick);
+  }
+
+  const pickMember = (index) => {
+    const pick = index + members.length * 3 + 2; // +2 because it stards at -1 and the final countdown selects not progresses
     
-    if(pickCountdown === 0)
-    {
-      setPickIndex(pickIndex % members.length);
-      setPickCountdown(pickCountdown - 1);
-      registerPick(pickIndex % members.length);
-      return;
-    }
+    setPickIndex(-1);
+    setPickCountdown(pick);
+  } 
 
-    var timeout = setTimeout(() => {
-      setPickCountdown(pickCountdown - 1);
-      setPickIndex(i => i + 1);
-    }, 50 + (1450 / pickCountdown));
-
-    return () => clearTimeout(timeout);
-  }, [pickCountdown, pickIndex]);
+  const clearPick = () => {
+    setPickIndex(-1);
+    setPickCountdown(-1);
+  }
 
   const changeMemberScore = (index, change) => {
     const copy = [...members];
@@ -65,6 +75,7 @@ function App() {
     copy[index] = tempMember;
 
     setMembers(copy);
+    clearPick();
   }
 
   const removeMember = (index) => {
@@ -73,42 +84,10 @@ function App() {
     if(index < 0 || index >= copy.length)
       return;
 
-    setMembers(copy.filter((_, i) => i != index));
+    setMembers(copy.filter((_, i) => i !== index));
+    clearPick();
   }
 
-  const randomInt = (min, max) => 
-  {
-    return min + Math.floor(Math.random() * max);
-  }
-
-  const pickRandom = () => {
-    const pick = randomInt(0, members.length);
-    pickMember(pick);
-  }
-
-  const pickFair = () => {
-    const selectedArr = members.map(m => m.selectedCount)
-    const minSelect = Math.min(...selectedArr);
-    let pick = null;
-
-    do{
-      pick = randomInt(0, members.length);
-    }while(members[pick].selectedCount != minSelect);
-
-    pickMember(pick);
-  }
-
-  const pickMember = (index) => {
-    const pick = index + members.length * 3 + 2; // +2 because it stards at -1 and the final countdown selects not progresses
-    
-    setPickIndex(-1);
-    setPickCountdown(pick);
-  } 
-
-  const clearPick = () => {
-    setPickIndex(-1);
-    setPickCountdown(-1);
-  }
 
   const addMember = () => {
     if(!newMemberName)
@@ -123,11 +102,12 @@ function App() {
 
     setMembers([...members, Member(newMemberName)]);
     clearNewMember();
+    clearPick()
   }
 
   const clearNewMember = () => setNewMemberName("");
 
-  const registerPick = (index) => {
+  const registerPick = React.useCallback((index) => {
     if(index < 0 || index >= members.length)
       return;
 
@@ -135,9 +115,32 @@ function App() {
     copy[index].selectedCount++;
     
     setMembers(copy);
-  }
+  }, [members]);
 
-  const selected = pickIndex % members.length;
+  React.useEffect(() => {
+    if(pickCountdown < 0)
+    {
+      return;
+    }
+    
+    if(pickCountdown === 0)
+    {
+      setPickIndex(pickIndex % members.length);
+      setPickCountdown(pickCountdown - 1);
+      registerPick(pickIndex % members.length);
+      return;
+    }
+
+    var timeout = setTimeout(() => {
+      setPickCountdown(pickCountdown - 1);
+      setPickIndex(i => i + 1);
+    }, 50 + (1450 / pickCountdown));
+
+    return () => clearTimeout(timeout);
+  }, [pickCountdown, pickIndex, members.length, registerPick]);
+
+
+  const selected = pickIndex !== -1 ? pickIndex % members.length : -1;
   const final = pickCountdown < 0;
 
   return (
