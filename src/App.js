@@ -12,14 +12,7 @@ import { ThemeButton } from './components/ThemeButton';
 
 function App() {
   
-  const [members, setMembers] = React.useState(
-  [
-    Member("Joseph Wheatley"),
-    Member("Nicholas Shyne"),
-    Member("Georgia Hill"),
-    Member("Rupreet Rai"),
-    Member("Nicholas Mead"),
-  ]);
+  const [members, setMembers] = React.useState([ ]);
 
   const [newMemberName, setNewMemberName] = React.useState("");
 
