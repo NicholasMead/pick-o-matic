@@ -1,8 +1,7 @@
-export const Member = (name, selected, highlighted) => {
+export const Member = (name) => {
     return {
-        name, 
-        selected: Boolean(selected),
-        highlighted: Boolean(highlighted),
-        score: 0
+        name,
+        score: 0,
+        selectedCount: 0
     }
 }

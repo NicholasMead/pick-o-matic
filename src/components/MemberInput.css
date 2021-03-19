@@ -1,0 +1,13 @@
+.member-tag > input {
+    border: none;
+    color: #333;
+    font-size: 1rem;
+    text-align: center;
+    font-weight: bold;
+    overflow: hidden;
+    width: 100%;
+}
+
+.member-tag > input:focus {
+    outline: none;
+}

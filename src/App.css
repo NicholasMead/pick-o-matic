@@ -5,4 +5,10 @@
   overflow: auto;
 }
 
+.member-row {
+  display: flex;
+}
 
+.member-row > div {
+  margin-right: 10px;
+}

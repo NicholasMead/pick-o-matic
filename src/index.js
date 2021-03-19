@@ -1,8 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+
+import loadIcons from './fa-icon-library.js';
 import './index.css';
+
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+
+loadIcons();
 
 ReactDOM.render(
   <React.StrictMode>

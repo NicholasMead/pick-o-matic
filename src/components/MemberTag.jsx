@@ -3,7 +3,6 @@ import './MemberTag.css'
 
 export const MemberTag = (props) => {
 
-    const name = props.name ? props.name : "Enter a name";
     const className = [
         "member-tag",
         props.highlighted ? "highlighted" : false,
@@ -13,7 +12,7 @@ export const MemberTag = (props) => {
     return (
         <div {...{...props, className}}>
             <span>
-                {name} 
+                {props.name} 
             </span>
             <span class="score">
                 <span class="icon">

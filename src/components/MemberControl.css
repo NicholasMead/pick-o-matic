@@ -1,4 +1,5 @@
-.member-tag {
+.member-control,
+.member-control.no-select:hover {
     background-color: #fff;
     color: #333;
     font-weight: bold;
@@ -6,7 +7,7 @@
     border-color: #aaa;
     border-width: 2px;
     border-style: solid;
-    width: 200px;
+    width: 2.5rem;
     padding: 1px;
     overflow: hidden;
     text-align: center;
@@ -15,27 +16,19 @@
     height: 2.5rem;
     line-height: 2.5rem;
     user-select: none;
+    cursor: pointer;
 }
 
-.member-tag.selected
-{
-    background-color: #1aed59;
-    border-color: #03b538;
+.member-control.no-select {
+    background-color: #ccc;
+}
 
-} 
-
-.member-tag.highlighted
-{
+.member-control:hover{
     background-color: #29a1f2;
     border-color: #0a80ce;
     color: #fff;
-} 
-
-.member-tag > .score {
-    padding-left: 10px;
 }
 
-.member-tag > .score > .value {
-    padding-left: 3px;
-    font-size: 0.8rem;
+.member-control:active {
+    filter: brightness(80%);
 }
