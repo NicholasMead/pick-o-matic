@@ -1,0 +1,40 @@
+.member-tag {
+    background-color: #fff;
+    color: #333;
+    font-weight: bold;
+    border-radius: 12px;
+    border-color: #aaa;
+    border-width: 2px;
+    border-style: solid;
+    width: 200px;
+    padding: 1px;
+    overflow: hidden;
+    text-align: center;
+    font-size: 1rem;
+    
+    height: 2.5rem;
+    line-height: 2.5rem;
+}
+
+.member-tag.selected
+{
+    background-color: #1aed59;
+    border-color: #03b538;
+
+} 
+
+.member-tag.highlighted
+{
+    background-color: #29a1f2;
+    border-color: #0a80ce;
+    color: #fff;
+} 
+
+.member-tag > .score {
+    padding-left: 10px;
+}
+
+.member-tag > .score > .value {
+    padding-left: 3px;
+    font-size: 0.8rem;
+}
