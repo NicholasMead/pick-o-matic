@@ -19,9 +19,9 @@
 
 .member-tag.selected
 {
-    background-color: #1aed59;
-    border-color: #03b538;
-
+    background-color: #e07d21;
+    border-color: #b9600b;
+    color: #fff;
 } 
 
 .member-tag.highlighted

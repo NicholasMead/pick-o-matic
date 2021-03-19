@@ -23,6 +23,8 @@ function App() {
 
   const [newMemberName, setNewMemberName] = React.useState("");
 
+  const [chromaKey, setChromaKey] = React.useState(false);
+
   const [pickCountdown, setPickCountdown] = React.useState(-1);
   const [pickIndex, setPickIndex] = React.useState(-1);
 
@@ -146,11 +148,12 @@ function App() {
   const final = pickCountdown < 0;
 
   return (
-    <div class="App">
+    <div class="App" style={{backgroundColor: chromaKey ? "#00ff00" : "#282c34"}}>
       <div class="actions" style={{margin: 10}}>
         <div class="btn btn-primary mr-2" onClick={pickRandom}>Pick Random</div>
         <div class="btn btn-primary mr-2" onClick={pickFair}>Pick Fair</div>
-        <div class="btn btn-warning" onClick={clearPick}>Clear</div>
+        <div class="btn btn-warning mr-2" onClick={clearPick}>Clear</div>
+        <div class="btn btn-info" onClick={() => setChromaKey(k => !k)}>{chromaKey ? "Disable Chroma" : "Enable Chroma"}</div>
       </div>
       <div class="members-board" style={{margin: 10, marginTop: 30}}>
         {members.map((m, i) => 
