@@ -1,5 +1,5 @@
 import './App.css';
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import { MemberControl } from './components/MemberControl';
 import { MemberTag } from './components/MemberTag';
@@ -7,11 +7,11 @@ import { Member } from './models/member'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { MemberInput } from './components/MemberInput';
-import { LoadFromCSV, SaveToCSV } from './services/saveLoadService';
+import { LoadFromCSV, LoadFromLocaleStorage, SaveToCSV, SaveToLocaleStorage } from './services/saveLoadService';
 
 function App() {
   
-  const [members, setMembers] = React.useState([ ]);
+  const [members, setMembers] = React.useState([]);
 
   const [newMemberName, setNewMemberName] = React.useState("");
 
@@ -56,10 +56,14 @@ function App() {
 
   const clearAll = () => {
     clearPick();
-    members.forEach(m => {
+    const copy = [...members];
+    
+    copy.forEach(m => {
       m.score = 0;
       m.selectedCount = 0;
     });
+
+    setMembers(copy);
   }
 
   const changeMemberScore = (index, change) => {
@@ -146,6 +150,13 @@ function App() {
   }
 
   React.useEffect(() => {
+    const newMembers = LoadFromLocaleStorage();
+
+    if(newMembers && newMembers.length > 0)
+      setMembers(newMembers);
+  }, []);
+
+  React.useEffect(() => {
     if(pickCountdown < 0)
     {
       return;
@@ -167,7 +178,11 @@ function App() {
     return () => clearTimeout(timeout);
   }, [pickCountdown, pickIndex, members.length, registerPick]);
 
+  React.useEffect(() => {
+    SaveToLocaleStorage(members);
+  }, [members]);
 
+  
   const selected = pickIndex !== -1 ? pickIndex % members.length : -1;
   const final = pickCountdown < 0;
 

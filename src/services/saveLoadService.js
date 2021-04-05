@@ -18,7 +18,7 @@ export const LoadFromCSV = async (file) => {
 }
 
 export const SaveToCSV = async (members) => {
-    var data = JSON.stringify(members) //await new CSV(members).toString();
+    var data = JSON.stringify(members)
 
     let blob = new Blob([data], {type:'text/csv;charset-utf-8'});
     let url = URL.createObjectURL(blob);
@@ -28,4 +28,14 @@ export const SaveToCSV = async (members) => {
     pom.setAttribute('download', 'members.json');
     pom.click();
 
+}
+
+export const SaveToLocaleStorage = (members) => {
+    var data = JSON.stringify(members) 
+    localStorage.setItem('members', data);
+}
+
+export const LoadFromLocaleStorage = () => {
+    var members = localStorage.getItem('members');
+    return JSON.parse(members);
 }
