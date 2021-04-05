@@ -1,5 +1,5 @@
 import './App.css';
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { MemberControl } from './components/MemberControl';
 import { MemberTag } from './components/MemberTag';
@@ -7,6 +7,7 @@ import { Member } from './models/member'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { MemberInput } from './components/MemberInput';
+import { LoadFromCSV, SaveToCSV } from './services/saveLoadService';
 
 function App() {
   
@@ -51,6 +52,14 @@ function App() {
   const clearPick = () => {
     setPickIndex(-1);
     setPickCountdown(-1);
+  }
+
+  const clearAll = () => {
+    clearPick();
+    members.forEach(m => {
+      m.score = 0;
+      m.selectedCount = 0;
+    });
   }
 
   const changeMemberScore = (index, change) => {
@@ -117,6 +126,25 @@ function App() {
     setMembers(copy);
   }, [members]);
 
+  const save = () => {
+    SaveToCSV(members);
+  }
+
+  const load = () => {
+    const fileSelector = document.createElement('input');
+    fileSelector.setAttribute('type', 'file');
+    
+    fileSelector.addEventListener('change', async (e) => {
+      var filePath = e.target.files[0];
+      var newMembers = await LoadFromCSV(filePath);
+      
+      if(newMembers)
+        setMembers(newMembers);
+    })
+
+    fileSelector.click();
+  }
+
   React.useEffect(() => {
     if(pickCountdown < 0)
     {
@@ -148,7 +176,10 @@ function App() {
       <div class="actions" style={{margin: 10}}>
         <div class="btn btn-primary mr-2" onClick={pickRandom}>Pick Random</div>
         <div class="btn btn-primary mr-2" onClick={pickFair}>Pick Fair</div>
-        <div class="btn btn-warning mr-2" onClick={clearPick}>Clear</div>
+        <div class="btn btn-warning mr-2" onClick={clearPick}>Clear Pick</div>
+        <div class="btn btn-warning mr-2" onClick={clearAll}>Clear All</div>
+        <div class="btn btn-success mr-2" onClick={save}>Save</div>
+        <div class="btn btn-success mr-2" onClick={load}>Load</div>
         <div class="btn btn-info" onClick={() => setChromaKey(k => !k)}>{chromaKey ? "Disable Chroma" : "Enable Chroma"}</div>
       </div>
       <div class="members-board" style={{margin: 10, marginTop: 30}}>
